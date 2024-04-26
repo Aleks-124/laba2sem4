@@ -5,13 +5,20 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ExportModule {
     public static void writeExcelFile(HashMap<String,HashMap<String, Double>> map,HashMap<String, Double> mapCovariance) {
+        File file = new File("data.xlsx");
+        if (file.exists()) {
+            // Удалить файл, если он существует
+            file.delete();
+        }
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Data");
 
@@ -20,7 +27,13 @@ public class ExportModule {
         Cell headerCell = headerRow.createCell(0);
         headerCell.setCellValue(" ");
         int colIndex = 1;
-        for (String outerKey : map.get("X").keySet()) {
+        String rt = null;
+        for (Map.Entry<String, HashMap<String, Double>> outerEntry : map.entrySet()) {
+            rt = outerEntry.getKey();
+            break;
+        }
+
+        for (String outerKey : map.get(rt).keySet()) {
             headerCell = headerRow.createCell(colIndex++);
             headerCell.setCellValue(outerKey);
         }
@@ -48,6 +61,7 @@ public class ExportModule {
         }
 
         // Сохранить лист Excel в файл
+
         try (FileOutputStream outputStream = new FileOutputStream("data.xlsx")) {
             workbook.write(outputStream);
             System.out.println("Файл Excel успешно создан.");
