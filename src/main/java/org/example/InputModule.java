@@ -31,6 +31,9 @@ public class InputModule {
                 if (cell != null && cell.getCellType() == CellType.NUMERIC) {
                     values[rowIndex - 1] = cell.getNumericCellValue();
                 }
+                else if (cell.getCellType() == CellType.FORMULA) {
+                    values[rowIndex - 1] = cell.getNumericCellValue();
+                }
             }
 
             // Добавляем данные страны в HashMap
